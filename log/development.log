@@ -1,0 +1,489 @@
+  [1m[35m (4.9ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (13.1ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY)[0m
+  [1m[35m (10.8ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateUsers (20220810201850)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (1.4ms)[0m  [1m[35mCREATE TABLE "users" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "email" varchar, "password_digest" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20220810201850"]]
+  [1m[36mTRANSACTION (9.8ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateSongs (20220810203059)
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE TABLE "songs" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "user_id" integer, "title" varchar, "artist" varchar, "genre" varchar, "lyrics" varchar, "date_learned" datetime, "my_ability_level" float, "singable" boolean, "tabs" varchar, "notes" varchar, "recording" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20220810203059"]]
+  [1m[36mTRANSACTION (10.5ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateInterestedSongs (20220810203132)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "interested_songs" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "user_id" varchar, "title" varchar, "artist" varchar, "genre" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.6ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20220810203132"]]
+  [1m[36mTRANSACTION (10.2ms)[0m  [1m[36mcommit transaction[0m
+Migrating to AddYearToSongs (20220812173245)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.2ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.5ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "asongs" ("id" integer NOT NULL PRIMARY KEY, "user_id" integer DEFAULT NULL, "title" varchar DEFAULT NULL, "artist" varchar DEFAULT NULL, "genre" varchar DEFAULT NULL, "lyrics" varchar DEFAULT NULL, "date_learned" datetime DEFAULT NULL, "my_ability_level" float DEFAULT NULL, "singable" boolean DEFAULT NULL, "tabs" varchar DEFAULT NULL, "notes" varchar DEFAULT NULL, "recording" varchar DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.2ms)[0m  [1m[32mINSERT INTO "asongs" ("id","user_id","title","artist","genre","lyrics","date_learned","my_ability_level","singable","tabs","notes","recording","created_at","updated_at")
+                     SELECT "id","user_id","title","artist","genre","lyrics","date_learned","my_ability_level","singable","tabs","notes","recording","created_at","updated_at" FROM "songs"[0m
+  [1m[35m (1.1ms)[0m  [1m[35mDROP TABLE "songs"[0m
+  [1m[35m (0.4ms)[0m  [1m[35mCREATE TABLE "songs" ("id" integer NOT NULL PRIMARY KEY, "user_id" integer DEFAULT NULL, "title" varchar DEFAULT NULL, "artist" varchar DEFAULT NULL, "genre" varchar DEFAULT NULL, "lyrics" varchar DEFAULT NULL, "my_ability_level" float DEFAULT NULL, "singable" boolean DEFAULT NULL, "tabs" varchar DEFAULT NULL, "notes" varchar DEFAULT NULL, "recording" varchar DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.2ms)[0m  [1m[32mINSERT INTO "songs" ("id","user_id","title","artist","genre","lyrics","my_ability_level","singable","tabs","notes","recording","created_at","updated_at")
+                     SELECT "id","user_id","title","artist","genre","lyrics","my_ability_level","singable","tabs","notes","recording","created_at","updated_at" FROM "asongs"[0m
+  [1m[35m (0.4ms)[0m  [1m[35mDROP TABLE "asongs"[0m
+  [1m[35m (0.4ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.2ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (1.2ms)[0m  [1m[35mALTER TABLE "songs" ADD "year_learned" integer[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.5ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20220812173245"]]
+  [1m[36mTRANSACTION (8.4ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateApiConnections (20220817155839)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE TABLE "api_connections" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20220817155839"]]
+  [1m[36mTRANSACTION (10.4ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.6ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.5ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["key", "environment"], ["value", "development"], ["created_at", "2022-12-05 16:49:19.137673"], ["updated_at", "2022-12-05 16:49:19.137673"]]
+  [1m[36mTRANSACTION (8.2ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users"[0m
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT MAX("users"."id") FROM "users"[0m
+  [1m[35m (0.8ms)[0m  [1m[33mUPDATE sqlite_sequence SET seq = 0 WHERE name = 'users';[0m
+  [1m[36mSong Load (0.4ms)[0m  [1m[34mSELECT "songs".* FROM "songs"[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT MAX("songs"."id") FROM "songs"[0m
+  [1m[35m (0.4ms)[0m  [1m[33mUPDATE sqlite_sequence SET seq = 0 WHERE name = 'songs';[0m
+  [1m[36mInterestedSong Load (0.3ms)[0m  [1m[34mSELECT "interested_songs".* FROM "interested_songs"[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT MAX("interested_songs"."id") FROM "interested_songs"[0m
+  [1m[35m (0.7ms)[0m  [1m[33mUPDATE sqlite_sequence SET seq = 0 WHERE name = 'interested_songs';[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mUser Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE "users"."email" = ? LIMIT ?[0m  [["email", "Brendan@Brendan.com"], ["LIMIT", 1]]
+  [1m[36mUser Create (0.8ms)[0m  [1m[32mINSERT INTO "users" ("name", "email", "password_digest", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["name", "Brendan"], ["email", "Brendan@Brendan.com"], ["password_digest", "$2a$12$x9dASITn1Jj7vb7MmR2HP.vQ98VmTxR6sDpTOuO11uLRn7YyaZleG"], ["created_at", "2022-12-05 16:49:19.722618"], ["updated_at", "2022-12-05 16:49:19.722618"]]
+  [1m[36mTRANSACTION (14.1ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSong Create (0.7ms)[0m  [1m[32mINSERT INTO "songs" ("user_id", "title", "artist", "genre", "lyrics", "my_ability_level", "singable", "tabs", "notes", "recording", "created_at", "updated_at", "year_learned") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["user_id", 1], ["title", "Creep"], ["artist", "Radiohead"], ["genre", "Rock"], ["lyrics", "when you were here before"], ["my_ability_level", 9.0], ["singable", 1], ["tabs", "test tabs"], ["notes", "test notes"], ["recording", "test recording link"], ["created_at", "2022-12-05 16:49:19.789991"], ["updated_at", "2022-12-05 16:49:19.789991"], ["year_learned", 2010]]
+  [1m[36mTRANSACTION (8.2ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mInterestedSong Create (0.6ms)[0m  [1m[32mINSERT INTO "interested_songs" ("user_id", "title", "artist", "genre", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["user_id", "1"], ["title", "Aint no sunshine"], ["artist", "unknown"], ["genre", "notsure"], ["created_at", "2022-12-05 16:49:19.815615"], ["updated_at", "2022-12-05 16:49:19.815615"]]
+  [1m[36mTRANSACTION (8.3ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/" for 127.0.0.1 at 2022-12-05 20:52:17 +0300
+  [1m[35m (1.6ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /home/kuria/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-6.1.7/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /home/kuria/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-6.1.7/lib/rails/templates/rails/welcome/index.html.erb (Duration: 13.3ms | Allocations: 535)
+Completed 200 OK in 38ms (Views: 26.4ms | ActiveRecord: 0.0ms | Allocations: 4484)
+
+
+Started GET "/favicon.ico" for 127.0.0.1 at 2022-12-05 20:52:17 +0300
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/getsongs/2" for 127.0.0.1 at 2022-12-05 20:52:53 +0300
+Processing by UsersController#get_songs as HTML
+  Parameters: {"id"=>"2"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/controllers/users_controller.rb:14:in `get_songs'
+Completed 404 Not Found in 32ms (ActiveRecord: 2.0ms | Allocations: 4913)
+
+
+  
+ActiveRecord::RecordNotFound (Couldn't find User with 'id'=2):
+  
+app/controllers/users_controller.rb:14:in `get_songs'
+Started GET "/favicon.ico" for 127.0.0.1 at 2022-12-05 20:52:54 +0300
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/getsongs/1" for 127.0.0.1 at 2022-12-05 20:53:04 +0300
+Processing by UsersController#get_songs as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/users_controller.rb:14:in `get_songs'
+  [1m[36mSong Load (1.4ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+  ↳ app/controllers/users_controller.rb:15:in `get_songs'
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (1.6ms)
+Completed 200 OK in 140ms (Views: 81.7ms | ActiveRecord: 3.6ms | Allocations: 18237)
+
+
+Started GET "/favicon.ico" for 127.0.0.1 at 2022-12-05 20:53:05 +0300
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/main.a639885a344932ccaa88.hot-update.json" for 127.0.0.1 at 2022-12-05 21:32:07 +0300
+  [1m[35m (1.1ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  
+ActionController::RoutingError (No route matches [GET] "/main.a639885a344932ccaa88.hot-update.json"):
+  
+Started GET "/me" for 127.0.0.1 at 2022-12-05 21:32:08 +0300
+Processing by SessionsController#show as */*
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/controllers/sessions_controller.rb:15:in `show'
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.23ms)
+Completed 200 OK in 41ms (Views: 5.0ms | ActiveRecord: 0.9ms | Allocations: 7856)
+
+
+Started GET "/me" for 127.0.0.1 at 2022-12-05 21:32:09 +0300
+Processing by SessionsController#show as */*
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/controllers/sessions_controller.rb:15:in `show'
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.24ms)
+Completed 200 OK in 7ms (Views: 1.5ms | ActiveRecord: 0.2ms | Allocations: 981)
+
+
+Started GET "/me" for 127.0.0.1 at 2022-12-05 21:32:16 +0300
+Processing by SessionsController#show as */*
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/controllers/sessions_controller.rb:15:in `show'
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.1ms)
+Completed 200 OK in 4ms (Views: 0.8ms | ActiveRecord: 0.2ms | Allocations: 766)
+
+
+Incoming Headers:
+  Origin: http://localhost:3000
+  Path-Info: /log_in
+  Access-Control-Request-Method: 
+  Access-Control-Request-Headers: 
+Started POST "/log_in" for 127.0.0.1 at 2022-12-05 21:32:23 +0300
+Processing by SessionsController#create as */*
+  Parameters: {"user"=>{"email"=>"Brendan@Brendan.com", "password"=>"[FILTERED]"}, "session"=>{"user"=>{"email"=>"Brendan@Brendan.com", "password"=>"[FILTERED]"}}}
+  [1m[36mUser Load (1.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = ? LIMIT ?[0m  [["email", "Brendan@Brendan.com"], ["LIMIT", 1]]
+  ↳ app/controllers/sessions_controller.rb:4:in `create'
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.09ms)
+Completed 200 OK in 285ms (Views: 0.7ms | ActiveRecord: 3.4ms | Allocations: 3629)
+
+
+{"Access-Control-Allow-Origin"=>"*", "Access-Control-Allow-Methods"=>"GET, POST, DELETE, PUT, PATCH, OPTIONS, HEAD", "Access-Control-Expose-Headers"=>"", "Access-Control-Max-Age"=>"0"}
+Started GET "/getinterests/1" for 127.0.0.1 at 2022-12-05 21:32:24 +0300
+Started GET "/getsongs/1" for 127.0.0.1 at 2022-12-05 21:32:24 +0300
+Started GET "/Songsbeingplayed/1" for 127.0.0.1 at 2022-12-05 21:32:24 +0300
+Processing by SongsController#songsbeingplayed as */*
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/songs_controller.rb:77:in `songsbeingplayed'
+Processing by UsersController#get_songs as */*
+Processing by UsersController#get_interests as */*
+  Parameters: {"id"=>"1"}
+  [1m[36mSong Load (0.2ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+  Parameters: {"id"=>"1"}
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  ↳ app/controllers/songs_controller.rb:78:in `songsbeingplayed'
+  ↳ app/controllers/users_controller.rb:14:in `get_songs'
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.87ms)
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  ↳ app/controllers/users_controller.rb:19:in `get_interests'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/users_controller.rb:19:in `get_interests'
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Completed 200 OK in 72ms (Views: 19.9ms | ActiveRecord: 1.5ms | Allocations: 17332)
+
+
+  [1m[36mInterestedSong Load (0.1ms)[0m  [1m[34mSELECT "interested_songs".* FROM "interested_songs" WHERE "interested_songs"."user_id" = ?[0m  [["user_id", "1"]]
+  ↳ app/controllers/users_controller.rb:14:in `get_songs'
+  ↳ app/controllers/users_controller.rb:20:in `get_interests'
+  [1m[36mSong Load (0.2ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+  ↳ app/controllers/users_controller.rb:15:in `get_songs'
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.54ms)
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.44ms)
+Completed 200 OK in 56ms (Views: 19.4ms | ActiveRecord: 1.6ms | Allocations: 17506)
+
+
+Completed 200 OK in 58ms (Views: 14.8ms | ActiveRecord: 0.9ms | Allocations: 18137)
+
+
+Started GET "/me" for 127.0.0.1 at 2022-12-05 21:32:30 +0300
+Processing by SessionsController#show as */*
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/sessions_controller.rb:15:in `show'
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.18ms)
+Completed 200 OK in 6ms (Views: 1.9ms | ActiveRecord: 0.2ms | Allocations: 1077)
+
+
+Started GET "/Songsbeingplayed/1" for 127.0.0.1 at 2022-12-05 21:32:30 +0300
+Started GET "/getinterests/1" for 127.0.0.1 at 2022-12-05 21:32:30 +0300
+Processing by SongsController#songsbeingplayed as */*
+Started GET "/getsongs/1" for 127.0.0.1 at 2022-12-05 21:32:30 +0300
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/songs_controller.rb:77:in `songsbeingplayed'
+Processing by UsersController#get_interests as */*
+  [1m[36mSong Load (0.1ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+  Parameters: {"id"=>"1"}
+  ↳ app/controllers/songs_controller.rb:78:in `songsbeingplayed'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.61ms)
+  ↳ app/controllers/users_controller.rb:19:in `get_interests'
+  [1m[36mInterestedSong Load (0.2ms)[0m  [1m[34mSELECT "interested_songs".* FROM "interested_songs" WHERE "interested_songs"."user_id" = ?[0m  [["user_id", "1"]]
+Completed 200 OK in 8ms (Views: 2.6ms | ActiveRecord: 0.2ms | Allocations: 2187)
+
+
+Processing by UsersController#get_songs as */*
+  ↳ app/controllers/users_controller.rb:20:in `get_interests'
+  Parameters: {"id"=>"1"}
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.71ms)
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Completed 200 OK in 16ms (Views: 10.6ms | ActiveRecord: 0.3ms | Allocations: 2394)
+
+
+  ↳ app/controllers/users_controller.rb:14:in `get_songs'
+  [1m[36mSong Load (0.3ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+  ↳ app/controllers/users_controller.rb:15:in `get_songs'
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (1.08ms)
+Completed 200 OK in 12ms (Views: 6.3ms | ActiveRecord: 0.6ms | Allocations: 1765)
+
+
+Started GET "/me" for 127.0.0.1 at 2022-12-05 21:32:32 +0300
+Processing by SessionsController#show as */*
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/sessions_controller.rb:15:in `show'
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.27ms)
+Completed 200 OK in 8ms (Views: 1.9ms | ActiveRecord: 0.6ms | Allocations: 732)
+
+
+Started GET "/Songsbeingplayed/1" for 127.0.0.1 at 2022-12-05 21:32:32 +0300
+Started GET "/getsongs/1" for 127.0.0.1 at 2022-12-05 21:32:32 +0300
+Processing by UsersController#get_songs as */*
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/users_controller.rb:14:in `get_songs'
+Started GET "/getinterests/1" for 127.0.0.1 at 2022-12-05 21:32:32 +0300
+  [1m[36mSong Load (0.2ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+Processing by SongsController#songsbeingplayed as */*
+  ↳ app/controllers/users_controller.rb:15:in `get_songs'
+  Parameters: {"id"=>"1"}
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.78ms)
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Processing by UsersController#get_interests as */*
+  ↳ app/controllers/songs_controller.rb:77:in `songsbeingplayed'
+Completed 200 OK in 13ms (Views: 6.7ms | ActiveRecord: 0.4ms | Allocations: 2036)
+
+
+  Parameters: {"id"=>"1"}
+  [1m[36mSong Load (0.2ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/songs_controller.rb:78:in `songsbeingplayed'
+  ↳ app/controllers/users_controller.rb:19:in `get_interests'
+  [1m[36mInterestedSong Load (0.2ms)[0m  [1m[34mSELECT "interested_songs".* FROM "interested_songs" WHERE "interested_songs"."user_id" = ?[0m  [["user_id", "1"]]
+  ↳ app/controllers/users_controller.rb:20:in `get_interests'
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.52ms)
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.34ms)
+Completed 200 OK in 12ms (Views: 4.3ms | ActiveRecord: 0.3ms | Allocations: 3310)
+
+
+Completed 200 OK in 8ms (Views: 3.0ms | ActiveRecord: 0.3ms | Allocations: 2158)
+
+
+Started GET "/me" for 127.0.0.1 at 2022-12-05 21:32:49 +0300
+Processing by SessionsController#show as */*
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/sessions_controller.rb:15:in `show'
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.28ms)
+Completed 200 OK in 6ms (Views: 1.7ms | ActiveRecord: 0.3ms | Allocations: 735)
+
+
+Started GET "/Songsbeingplayed/1" for 127.0.0.1 at 2022-12-05 21:32:50 +0300
+Started GET "/getinterests/1" for 127.0.0.1 at 2022-12-05 21:32:50 +0300
+Started GET "/getsongs/1" for 127.0.0.1 at 2022-12-05 21:32:50 +0300
+Processing by SongsController#songsbeingplayed as */*
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/songs_controller.rb:77:in `songsbeingplayed'
+  [1m[36mSong Load (0.1ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+Processing by UsersController#get_songs as */*
+  ↳ app/controllers/songs_controller.rb:78:in `songsbeingplayed'
+  Parameters: {"id"=>"1"}
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.53ms)
+Processing by UsersController#get_interests as */*
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Completed 200 OK in 9ms (Views: 2.5ms | ActiveRecord: 0.3ms | Allocations: 1862)
+
+
+  Parameters: {"id"=>"1"}
+  ↳ app/controllers/users_controller.rb:14:in `get_songs'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mSong Load (0.2ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+  ↳ app/controllers/users_controller.rb:19:in `get_interests'
+  ↳ app/controllers/users_controller.rb:15:in `get_songs'
+  [1m[36mInterestedSong Load (0.1ms)[0m  [1m[34mSELECT "interested_songs".* FROM "interested_songs" WHERE "interested_songs"."user_id" = ?[0m  [["user_id", "1"]]
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.42ms)
+  ↳ app/controllers/users_controller.rb:20:in `get_interests'
+Completed 200 OK in 9ms (Views: 5.6ms | ActiveRecord: 0.3ms | Allocations: 2896)
+
+
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.36ms)
+Completed 200 OK in 9ms (Views: 5.1ms | ActiveRecord: 0.2ms | Allocations: 2713)
+
+
+Started GET "/search?artist=justin%20beiber&title=baby" for 127.0.0.1 at 2022-12-05 21:33:08 +0300
+Processing by ApiConnectionController#fetcher as */*
+  Parameters: {"artist"=>"justin beiber", "title"=>"baby"}
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.28ms)
+Completed 200 OK in 1207ms (Views: 1.5ms | ActiveRecord: 2.2ms | Allocations: 6001)
+
+
+Started GET "/search?artist=justin%20beiber&title=baby" for 127.0.0.1 at 2022-12-05 21:33:09 +0300
+Processing by ApiConnectionController#fetcher as */*
+  Parameters: {"artist"=>"justin beiber", "title"=>"baby"}
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.31ms)
+Completed 200 OK in 353ms (Views: 1.3ms | ActiveRecord: 0.0ms | Allocations: 1365)
+
+
+Started GET "/search?artist=justin%20beiber&title=baby" for 127.0.0.1 at 2022-12-05 21:33:11 +0300
+Processing by ApiConnectionController#fetcher as */*
+  Parameters: {"artist"=>"justin beiber", "title"=>"baby"}
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.33ms)
+Completed 200 OK in 1191ms (Views: 1.7ms | ActiveRecord: 0.0ms | Allocations: 1322)
+
+
+Started GET "/search?artist=justin%20&title=baby" for 127.0.0.1 at 2022-12-05 21:33:21 +0300
+Processing by ApiConnectionController#fetcher as */*
+  Parameters: {"artist"=>"justin ", "title"=>"baby"}
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (4.38ms)
+Completed 200 OK in 1396ms (Views: 5.5ms | ActiveRecord: 0.0ms | Allocations: 3309)
+
+
+Started GET "/search?artist=justin%20&title=baby" for 127.0.0.1 at 2022-12-05 21:33:22 +0300
+Processing by ApiConnectionController#fetcher as */*
+  Parameters: {"artist"=>"justin ", "title"=>"baby"}
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (4.32ms)
+Completed 200 OK in 378ms (Views: 5.5ms | ActiveRecord: 0.0ms | Allocations: 3243)
+
+
+Started GET "/me" for 127.0.0.1 at 2022-12-05 21:33:30 +0300
+Processing by SessionsController#show as */*
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/sessions_controller.rb:15:in `show'
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.09ms)
+Completed 200 OK in 4ms (Views: 0.8ms | ActiveRecord: 0.3ms | Allocations: 842)
+
+
+Started GET "/Songsbeingplayed/1" for 127.0.0.1 at 2022-12-05 21:33:30 +0300
+Started GET "/getinterests/1" for 127.0.0.1 at 2022-12-05 21:33:30 +0300
+Started GET "/getsongs/1" for 127.0.0.1 at 2022-12-05 21:33:30 +0300
+Processing by SongsController#songsbeingplayed as */*
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Processing by UsersController#get_songs as */*
+  ↳ app/controllers/songs_controller.rb:77:in `songsbeingplayed'
+  Parameters: {"id"=>"1"}
+  [1m[36mSong Load (0.1ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+Processing by UsersController#get_interests as */*
+  ↳ app/controllers/songs_controller.rb:78:in `songsbeingplayed'
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.42ms)
+  ↳ app/controllers/users_controller.rb:19:in `get_interests'
+  ↳ app/controllers/users_controller.rb:14:in `get_songs'
+Completed 200 OK in 10ms (Views: 2.5ms | ActiveRecord: 0.3ms | Allocations: 2650)
+
+
+  [1m[36mInterestedSong Load (0.2ms)[0m  [1m[34mSELECT "interested_songs".* FROM "interested_songs" WHERE "interested_songs"."user_id" = ?[0m  [["user_id", "1"]]
+  [1m[36mSong Load (0.1ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+  ↳ app/controllers/users_controller.rb:20:in `get_interests'
+  ↳ app/controllers/users_controller.rb:15:in `get_songs'
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.38ms)
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.59ms)
+Completed 200 OK in 13ms (Views: 8.0ms | ActiveRecord: 0.3ms | Allocations: 3406)
+
+
+Completed 200 OK in 15ms (Views: 7.1ms | ActiveRecord: 0.2ms | Allocations: 3923)
+
+
+Started GET "/me" for 127.0.0.1 at 2022-12-05 21:33:39 +0300
+Processing by SessionsController#show as */*
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/sessions_controller.rb:15:in `show'
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.11ms)
+Completed 200 OK in 5ms (Views: 1.0ms | ActiveRecord: 0.3ms | Allocations: 749)
+
+
+Started GET "/Songsbeingplayed/1" for 127.0.0.1 at 2022-12-05 21:33:39 +0300
+Started GET "/getsongs/1" for 127.0.0.1 at 2022-12-05 21:33:39 +0300
+Processing by SongsController#songsbeingplayed as */*
+Started GET "/getinterests/1" for 127.0.0.1 at 2022-12-05 21:33:39 +0300
+  Parameters: {"id"=>"1"}
+Processing by UsersController#get_songs as */*
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  Parameters: {"id"=>"1"}
+  ↳ app/controllers/songs_controller.rb:77:in `songsbeingplayed'
+Processing by UsersController#get_interests as */*
+  [1m[36mSong Load (0.2ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/users_controller.rb:14:in `get_songs'
+  ↳ app/controllers/songs_controller.rb:78:in `songsbeingplayed'
+  Parameters: {"id"=>"1"}
+  [1m[36mSong Load (0.2ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.77ms)
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/users_controller.rb:19:in `get_interests'
+Completed 200 OK in 16ms (Views: 5.1ms | ActiveRecord: 0.3ms | Allocations: 2805)
+
+
+  ↳ app/controllers/users_controller.rb:15:in `get_songs'
+  [1m[36mInterestedSong Load (0.2ms)[0m  [1m[34mSELECT "interested_songs".* FROM "interested_songs" WHERE "interested_songs"."user_id" = ?[0m  [["user_id", "1"]]
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.61ms)
+  ↳ app/controllers/users_controller.rb:20:in `get_interests'
+Completed 200 OK in 22ms (Views: 15.4ms | ActiveRecord: 0.4ms | Allocations: 3782)
+
+
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.77ms)
+Completed 200 OK in 17ms (Views: 11.9ms | ActiveRecord: 0.4ms | Allocations: 2690)
+
+
+Started GET "/me" for 127.0.0.1 at 2022-12-05 21:33:41 +0300
+Processing by SessionsController#show as */*
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/sessions_controller.rb:15:in `show'
+[active_model_serializers] Rendered ActiveModel::Serializer::Null with Hash (0.16ms)
+Completed 200 OK in 6ms (Views: 1.6ms | ActiveRecord: 0.2ms | Allocations: 732)
+
+
+Started GET "/getsongs/1" for 127.0.0.1 at 2022-12-05 21:33:41 +0300
+Processing by UsersController#get_songs as */*
+  Parameters: {"id"=>"1"}
+Started GET "/getinterests/1" for 127.0.0.1 at 2022-12-05 21:33:41 +0300
+Started GET "/Songsbeingplayed/1" for 127.0.0.1 at 2022-12-05 21:33:41 +0300
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/users_controller.rb:14:in `get_songs'
+  [1m[36mSong Load (0.1ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+  ↳ app/controllers/users_controller.rb:15:in `get_songs'
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.52ms)
+Processing by UsersController#get_interests as */*
+Completed 200 OK in 7ms (Views: 3.9ms | ActiveRecord: 0.4ms | Allocations: 1690)
+
+
+  Parameters: {"id"=>"1"}
+Processing by SongsController#songsbeingplayed as */*
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/users_controller.rb:19:in `get_interests'
+  [1m[36mInterestedSong Load (0.1ms)[0m  [1m[34mSELECT "interested_songs".* FROM "interested_songs" WHERE "interested_songs"."user_id" = ?[0m  [["user_id", "1"]]
+  ↳ app/controllers/users_controller.rb:20:in `get_interests'
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.4ms)
+Completed 200 OK in 6ms (Views: 3.1ms | ActiveRecord: 0.3ms | Allocations: 1412)
+
+
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/songs_controller.rb:77:in `songsbeingplayed'
+  [1m[36mSong Load (0.1ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."user_id" = ?[0m  [["user_id", 1]]
+  ↳ app/controllers/songs_controller.rb:78:in `songsbeingplayed'
+[active_model_serializers] Rendered ActiveModel::Serializer::CollectionSerializer with ActiveModelSerializers::Adapter::Attributes (0.58ms)
+Completed 200 OK in 9ms (Views: 1.8ms | ActiveRecord: 0.4ms | Allocations: 1327)
+
+
+Started GET "/songs/1" for 127.0.0.1 at 2022-12-05 21:33:51 +0300
+Processing by SongsController#show as */*
+  Parameters: {"id"=>"1"}
+  [1m[36mSong Load (0.6ms)[0m  [1m[34mSELECT "songs".* FROM "songs" WHERE "songs"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/songs_controller.rb:8:in `show'
+[active_model_serializers] Rendered SongSerializer with ActiveModelSerializers::Adapter::Attributes (1.56ms)
+Completed 200 OK in 7ms (Views: 2.8ms | ActiveRecord: 0.6ms | Allocations: 987)
+
+

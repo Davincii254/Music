@@ -1,21 +1,21 @@
 class ApiConnection < ApplicationRecord
 
     def fetch(params)
-        address = RestClient.get("https://api.musixmatch.com/ws/1.1/track.search?q_track=#{params[:title]}&q_artist=#{params[:artist]}&apikey=946d2b6430d666dda5f53a9c42cc0f61" 
+        address = RestClient.get("https://api.musixmatch.com/ws/1.1/track.search?q_track=#{params[:title]}&q_artist=#{params[:artist]}&apikey=936b9c369a7eb7e2f22bfb368fefb0f6" 
         )
         JSON.parse(address)
 
     end
 
     def lyric_fetch(params)
-        address = RestClient.get("https://api.musixmatch.com/ws/1.1/track.search?q_track=#{params[:title]}&q_artist=#{params[:artist]}&apikey=946d2b6430d666dda5f53a9c42cc0f61" 
+        address = RestClient.get("https://api.musixmatch.com/ws/1.1/track.search?q_track=#{params[:title]}&q_artist=#{params[:artist]}&apikey=936b9c369a7eb7e2f22bfb368fefb0f6" 
         )
         
         fixed = JSON.parse(address)
 
         trackID = fixed["message"]["body"]["track_list"][0]["track"]["track_id"]
 
-        lyricsRequest = RestClient.get("https://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=#{trackID}&apikey=946d2b6430d666dda5f53a9c42cc0f61")
+        lyricsRequest = RestClient.get("https://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=#{trackID}&apikey=936b9c369a7eb7e2f22bfb368fefb0f6")
         lyricParse = JSON.parse(lyricsRequest)
         lyrics = lyricParse["message"]["body"]["lyrics"]
   
